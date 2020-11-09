@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.honestpeak.mapper.StudentClassMapper" >
+  <resultMap id="BaseResultMap" type="com.honestpeak.model.StudentClass" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="code" property="code" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="year" property="year" jdbcType="INTEGER" />
+    <result column="major_id" property="majorId" jdbcType="BIGINT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, code, name, year, major_id
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from tb_class
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from tb_class
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <!--批量删除  -->
+  <delete id="deleteByIds" parameterType="String">
+	delete from tb_class
+	where id in
+	<foreach collection="array" index="index" item="item"  open="(" separator="," close=")">
+		#{item}
+	</foreach>
+  </delete>
+  <insert id="insert" parameterType="com.honestpeak.model.StudentClass" >
+    insert into tb_class (id, code, name, 
+      year, major_id)
+    values (#{id,jdbcType=BIGINT}, #{code,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
+      #{year,jdbcType=INTEGER}, #{majorId,jdbcType=BIGINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.honestpeak.model.StudentClass" >
+    insert into tb_class
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="code != null" >
+        code,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="year != null" >
+        year,
+      </if>
+      <if test="majorId != null" >
+        major_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="code != null" >
+        #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="year != null" >
+        #{year,jdbcType=INTEGER},
+      </if>
+      <if test="majorId != null" >
+        #{majorId,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.honestpeak.model.StudentClass" >
+    update tb_class
+    <set >
+      <if test="code != null" >
+        code = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="year != null" >
+        year = #{year,jdbcType=INTEGER},
+      </if>
+      <if test="majorId != null" >
+        major_id = #{majorId,jdbcType=BIGINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  
+  
+  <update id="updateByPrimaryKey" parameterType="com.honestpeak.vo.StudentClassVo"><!--   -->
+    update tb_class
+    set code = #{record.code,jdbcType=VARCHAR},
+      name = #{record.name,jdbcType=VARCHAR},
+      year = #{record.year,jdbcType=INTEGER},
+      major_id = #{record.majorId,jdbcType=BIGINT}
+    where id = #{record.id,jdbcType=BIGINT}
+  </update>
+  <resultMap id="classToDepartmentMap" extends="BaseResultMap" type="com.honestpeak.vo.StudentClassVo">
+  		<association property="major" columnPrefix="major_" resultMap="com.honestpeak.mapper.MajorMapper.BaseResultMap"></association>
+  		<association property="department" columnPrefix="department_" resultMap="com.honestpeak.mapper.DepartMapper.BaseResultMap"></association>
+  		<association property="school" columnPrefix="school_" resultMap="com.honestpeak.mapper.SchoolMapper.BaseResultMap"></association>
+  </resultMap>
+  <select id="getAllForPage" resultMap="classToDepartmentMap">
+  		select
+ 		c.id 		as	id,
+		c.code 		as	code,
+		c.name 		as	name,
+		c.year 		as	year,
+		c.major_id 	as	major_id,
+		m.code 		as	major_code,
+		m.name 		as	major_name,
+		d.code 		as	department_code,
+		d.name 		as	department_name,
+		s.code 		as	school_code,
+		s.name 		as	school_name
+	from tb_class c
+	inner join tb_major m on c.major_id = m.id
+	inner join tb_depart d on m.depart_id = d.id
+	inner join tb_school s on d.school_id = s.id
+	<where>
+		<if test="schoolId != null">
+			and s.id = #{schoolId}
+		</if>
+		<if test="departmentId != null">
+			and d.id = #{departmentId}
+		</if>
+		<if test="majorId != null">
+			and m.id = #{majorId}
+		</if>
+		<if test="classId != null">
+			and c.id = #{classId}
+		</if>
+		<if test="grade != null and grade !=''">
+			and c.year = #{grade}
+		</if>
+	</where>
+  </select>
+  <select id="selectVoByPrimaryKey" resultMap="classToDepartmentMap">
+  	select
+ 		c.id 		as	id,
+		c.code 		as	code,
+		c.name 		as	name,
+		c.year 		as	year,
+		c.major_id 	as	major_id,
+		m.id		as	major_id,
+		m.code 		as	major_code,
+		m.name 		as	major_name,
+		d.id		as	department_id,
+		d.code 		as	department_code,
+		d.name 		as	department_name,
+		s.code 		as	school_code,
+		s.name 		as	school_name
+	from tb_class c
+	inner join tb_major m on c.major_id = m.id
+	inner join tb_depart d on m.depart_id = d.id
+	inner join tb_school s on d.school_id = s.id
+	where
+		c.id = #{id}
+  </select>
+  <select id="findClassByMajorId" resultMap="BaseResultMap">
+  	select 
+    <include refid="Base_Column_List" />
+    from tb_class
+    where major_id = #{majorId,jdbcType=BIGINT}
+  </select>
+  <select id="selectClassByCode" resultMap="BaseResultMap" parameterType="String">
+  	select 
+    <include refid="Base_Column_List" />
+    from tb_class
+    where code = #{code,jdbcType=VARCHAR}
+  </select>
+   <select id="selectClassByName" resultMap="BaseResultMap" parameterType="String">
+  	select 
+    <include refid="Base_Column_List" />
+    from tb_class
+    where name = #{name,jdbcType=VARCHAR}
+  </select>
+  <select id="getByName" parameterType="String" resultType="com.honestpeak.model.StudentClass">
+		select * from tb_class where name = #{className}
+	</select>
+</mapper>

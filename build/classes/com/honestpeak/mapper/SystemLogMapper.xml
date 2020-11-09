@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.honestpeak.mapper.SystemLogMapper">
+	<resultMap id="BaseResultMap" type="com.honestpeak.model.SystemLog">
+		<id column="id" jdbcType="BIGINT" property="id" />
+		<result column="loginName" jdbcType="VARCHAR" property="loginName" />
+		<result column="optContent" jdbcType="VARCHAR" property="optContent" />
+		<result column="optIp" jdbcType="VARCHAR" property="optIp" />
+		<result column="optTime" jdbcType="TIMESTAMP" property="optTime" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, loginName, optContent, optIp, optTime
+	</sql>
+	<select id="selectByPrimaryKey" parameterType="java.lang.Long"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from tb_system_log
+		where id = #{id,jdbcType=BIGINT}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+		delete from tb_system_log
+		where id = #{id,jdbcType=BIGINT}
+	</delete>
+	<insert id="insert" parameterType="com.honestpeak.model.SystemLog">
+		<selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		insert into tb_system_log (loginName, optContent, optIp,
+		optTime)
+		values (#{loginName,jdbcType=VARCHAR}, #{optContent,jdbcType=VARCHAR},
+		#{optIp,jdbcType=VARCHAR},
+		#{optTime,jdbcType=TIMESTAMP})
+	</insert>
+	<insert id="insertSelective" parameterType="com.honestpeak.model.SystemLog">
+		<selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		insert into tb_system_log
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="loginName != null">
+				loginName,
+			</if>
+			<if test="optContent != null">
+				optContent,
+			</if>
+			<if test="optIp != null">
+				optIp,
+			</if>
+			<if test="optTime != null">
+				optTime,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="loginName != null">
+				#{loginName,jdbcType=VARCHAR},
+			</if>
+			<if test="optContent != null">
+				#{optContent,jdbcType=VARCHAR},
+			</if>
+			<if test="optIp != null">
+				#{optIp,jdbcType=VARCHAR},
+			</if>
+			<if test="optTime != null">
+				#{optTime,jdbcType=TIMESTAMP},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.honestpeak.model.SystemLog">
+		update tb_system_log
+		<set>
+			<if test="loginName != null">
+				loginName = #{loginName,jdbcType=VARCHAR},
+			</if>
+			<if test="optContent != null">
+				optContent = #{optContent,jdbcType=VARCHAR},
+			</if>
+			<if test="optIp != null">
+				optIp = #{optIp,jdbcType=VARCHAR},
+			</if>
+			<if test="optTime != null">
+				optTime = #{optTime,jdbcType=TIMESTAMP},
+			</if>
+		</set>
+		where id = #{id,jdbcType=BIGINT}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.honestpeak.model.SystemLog">
+		update tb_system_log
+		set loginName = #{loginName,jdbcType=VARCHAR},
+		optContent = #{optContent,jdbcType=VARCHAR},
+		optIp = #{optIp,jdbcType=VARCHAR},
+		optTime = #{optTime,jdbcType=TIMESTAMP}
+		where id = #{id,jdbcType=BIGINT}
+	</update>
+	<select id="findSystemLogPage" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from tb_system_log
+		<where>
+			<if test="systemLog != null">
+				<if test="systemLog.optContent != null and systemLog.optContent!=''">
+					optContent LIKE CONCAT('%',#{systemLog.optContent},'%') 
+				</if>
+			</if>
+		</where>
+		ORDER BY id desc
+	</select>
+</mapper>

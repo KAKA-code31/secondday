@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.honestpeak.mapper.ScoreMapper" >
+  <resultMap id="BaseResultMap" type="com.honestpeak.model.Score" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="selectcourse_id" property="selectcourseId" jdbcType="BIGINT" />
+    <result column="reportpath" property="reportpath" jdbcType="VARCHAR" />
+    <result column="picturepath" property="picturepath" jdbcType="VARCHAR" />
+    <result column="sourcecodepath" property="sourcecodepath" jdbcType="VARCHAR" />
+    <result column="score" property="score" jdbcType="DOUBLE" />
+    <result column="checkflag" property="checkflag" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, selectcourse_id, reportpath, picturepath, sourcecodepath, score
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from tb_score
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectBySelectcourseId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from tb_score
+    where selectcourse_id = #{selectCourseId,jdbcType=BIGINT}
+  </select>  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from tb_score
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.honestpeak.model.Score" >
+    insert into tb_score (id, selectcourse_id, reportpath, 
+      picturepath, sourcecodepath, score
+      )
+    values (#{id,jdbcType=BIGINT}, #{selectcourseId,jdbcType=BIGINT}, #{reportpath,jdbcType=VARCHAR}, 
+      #{picturepath,jdbcType=VARCHAR}, #{sourcecodepath,jdbcType=VARCHAR}, #{score,jdbcType=DOUBLE}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.honestpeak.model.Score" >
+    insert into tb_score
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="selectcourseId != null" >
+        selectcourse_id,
+      </if>
+      <if test="reportpath != null" >
+        reportpath,
+      </if>
+      <if test="picturepath != null" >
+        picturepath,
+      </if>
+      <if test="sourcecodepath != null" >
+        sourcecodepath,
+      </if>
+      <if test="score != null" >
+        score,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="selectcourseId != null" >
+        #{selectcourseId,jdbcType=BIGINT},
+      </if>
+      <if test="reportpath != null" >
+        #{reportpath,jdbcType=VARCHAR},
+      </if>
+      <if test="picturepath != null" >
+        #{picturepath,jdbcType=VARCHAR},
+      </if>
+      <if test="sourcecodepath != null" >
+        #{sourcecodepath,jdbcType=VARCHAR},
+      </if>
+      <if test="score != null" >
+        #{score,jdbcType=DOUBLE},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.honestpeak.model.Score" >
+    update tb_score
+    <set >
+      <if test="selectcourseId != null" >
+        selectcourse_id = #{selectcourseId,jdbcType=BIGINT},
+      </if>
+      <if test="reportpath != null" >
+        reportpath = #{reportpath,jdbcType=VARCHAR},
+      </if>
+      <if test="picturepath != null" >
+        picturepath = #{picturepath,jdbcType=VARCHAR},
+      </if>
+      <if test="sourcecodepath != null" >
+        sourcecodepath = #{sourcecodepath,jdbcType=VARCHAR},
+      </if>
+      <if test="score != null" >
+        score = #{score,jdbcType=DOUBLE},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.honestpeak.model.Score" >
+    update tb_score
+    set selectcourse_id = #{selectcourseId,jdbcType=BIGINT},
+      reportpath = #{reportpath,jdbcType=VARCHAR},
+      picturepath = #{picturepath,jdbcType=VARCHAR},
+      sourcecodepath = #{sourcecodepath,jdbcType=VARCHAR},
+      score = #{score,jdbcType=DOUBLE}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateScoreRepetition">
+  	update tb_score s,tb_selectcourse se  set s.repetition = #{temp}
+  	where se.id = #{id} and se.id = s.selectcourse_id
+  </update>
+  <update id="updateByselectcourseId">
+  	update tb_score set checkflag = 1
+  	where selectcourse_id=#{id}
+  </update>
+  <update id="updatePath" parameterType="com.honestpeak.model.Score" >
+  	update tb_score
+  	<set >
+  	  <if test="reportpath != null" >
+        reportpath = #{reportpath,jdbcType=VARCHAR},
+      </if>
+      <if test="picturepath != null" >
+        picturepath = #{picturepath,jdbcType=VARCHAR},
+      </if>
+      <if test="sourcecodepath != null" >
+        sourcecodepath = #{sourcecodepath,jdbcType=VARCHAR},
+      </if>
+    </set>
+  	where selectcourse_id=#{selectcourseId}
+  </update>
+   <update id="updateScore">
+  	update tb_score set score = NULL
+  	where selectcourse_id=#{selectCourseId,jdbcType=BIGINT}
+  </update>
+</mapper>

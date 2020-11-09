@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.honestpeak.mapper.TeacherMapper" >
+  <resultMap id="BaseResultMap" type="com.honestpeak.model.Teacher" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="password" property="password" jdbcType="VARCHAR" />
+    <result column="sex" property="sex" jdbcType="INTEGER" />
+    <result column="phoneno" property="phoneno" jdbcType="VARCHAR" />
+    <result column="email" property="email" jdbcType="VARCHAR" />
+    <result column="school_id" property="schoolId" jdbcType="BIGINT" />
+    <result column="depart_id" property="departId" jdbcType="BIGINT" />
+    <result column="admintype" property="adminType" jdbcType="INTEGER" />
+  </resultMap>
+  <resultMap id="UserRoleVoMap" type="com.honestpeak.vo.UserRoleVo">
+		<result column="id" property="id" jdbcType="BIGINT" />
+		<result column="userId" property="userId" jdbcType="VARCHAR" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="adminType" property="adminType" jdbcType="INTEGER" />
+		<result column="password" property="password" jdbcType="VARCHAR" />
+		<association property="roles" column="id" select="com.honestpeak.mapper.UserRoleMapper.findUserRoleInsVos"></association>
+	</resultMap>
+  <resultMap id="TeacherVoMap" type="com.honestpeak.vo.TeacherVo">
+	 	<id column="id" property="id" jdbcType="BIGINT" />
+ 	  	<result column="user_id" property="userId" jdbcType="VARCHAR" />
+		<association property="depart" column="depart_id" select="com.honestpeak.mapper.DepartMapper.getById"></association>
+		<association property="school" column="school_id" select="com.honestpeak.mapper.SchoolMapper.getById"></association>
+	</resultMap>
+  <sql id="Base_Column_List" >
+    id, user_id, name, password, sex, phoneno, email, school_id, depart_id, admintype
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from tb_teacher
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from tb_teacher
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.honestpeak.model.Teacher" >
+    insert into tb_teacher (id, user_id, name, 
+      password, sex, phoneno, 
+      email, school_id, depart_id, 
+      admintype)
+    values (#{id,jdbcType=BIGINT}, #{userId,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
+      #{password,jdbcType=VARCHAR}, #{sex,jdbcType=INTEGER}, #{phoneno,jdbcType=VARCHAR}, 
+      #{email,jdbcType=VARCHAR}, #{schoolId,jdbcType=BIGINT}, #{departId,jdbcType=BIGINT}, 
+      #{adminType,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.honestpeak.model.Teacher" >
+    insert into tb_teacher
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="password != null" >
+        password,
+      </if>
+      <if test="sex != null" >
+        sex,
+      </if>
+      <if test="phoneno != null" >
+        phoneno,
+      </if>
+      <if test="email != null" >
+        email,
+      </if>
+      <if test="schoolId != null" >
+        school_id,
+      </if>
+      <if test="departId != null" >
+        depart_id,
+      </if>
+      <if test="adminType != null" >
+        admintype,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null" >
+        #{sex,jdbcType=INTEGER},
+      </if>
+      <if test="phoneno != null" >
+        #{phoneno,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="schoolId != null" >
+        #{schoolId,jdbcType=BIGINT},
+      </if>
+      <if test="departId != null" >
+        #{departId,jdbcType=BIGINT},
+      </if>
+      <if test="adminType != null" >
+        #{adminType,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.honestpeak.model.Teacher" >
+    update tb_teacher
+    <set >
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        password = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null" >
+        sex = #{sex,jdbcType=INTEGER},
+      </if>
+      <if test="phoneno != null" >
+        phoneno = #{phoneno,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        email = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="schoolId != null" >
+        school_id = #{schoolId,jdbcType=BIGINT},
+      </if>
+      <if test="departId != null" >
+        depart_id = #{departId,jdbcType=BIGINT},
+      </if>
+     <!--  <if test="adminType != null" >
+        admintype = #{adminType,jdbcType=INTEGER},
+      </if> -->
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.honestpeak.model.Teacher" >
+    update tb_teacher
+    set user_id = #{userId,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR},
+      password = #{password,jdbcType=VARCHAR},
+      sex = #{sex,jdbcType=INTEGER},
+      phoneno = #{phoneno,jdbcType=VARCHAR},
+      email = #{email,jdbcType=VARCHAR},
+      school_id = #{schoolId,jdbcType=BIGINT},
+      depart_id = #{departId,jdbcType=BIGINT},
+      admintype = #{adminType,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="getUserByUserAccount" parameterType="java.lang.String" resultMap="BaseResultMap">
+		SELECT * FROM tb_teacher WHERE user_id = #{username} limit 0,1
+	</select>
+  <select id="loginUserByUserName" parameterType="java.lang.String" resultMap="BaseResultMap">
+		SELECT * FROM tb_teacher WHERE name = #{username}
+	</select>
+	<select id="getUserRoleVoById" parameterType="java.lang.Long" resultMap="UserRoleVoMap">
+		SELECT * FROM tb_teacher WHERE id = #{userId,jdbcType=BIGINT} limit 0,1
+	</select>
+	<select id="getUserIdById" parameterType="java.lang.Long" resultType="java.lang.String">
+		select user_id from tb_teacher where id = #{userId}
+	</select>
+	<select id="findTeacherPage" resultMap="TeacherVoMap">
+		select t.* from tb_teacher t 
+	</select>
+	
+	<insert id="addTeacher" parameterType="com.honestpeak.vo.TeacherVo" useGeneratedKeys="true" keyProperty = "id" keyColumn="id">
+	<selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+	    	SELECT LAST_INSERT_ID()
+	    </selectKey>
+		 insert into tb_teacher
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="password != null" >
+        password,
+      </if>
+      <if test="sex != null" >
+        sex,
+      </if>
+      <if test="phoneno != null" >
+        phoneno,
+      </if>
+      <if test="email != null" >
+        email,
+      </if>
+      <if test="schoolId != null" >
+        school_id,
+      </if>
+      <if test="departId != null" >
+        depart_id,
+      </if>
+        admintype
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null" >
+        #{sex,jdbcType=INTEGER},
+      </if>
+      <if test="phoneno != null" >
+        #{phoneno,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="schoolId != null" >
+        #{schoolId,jdbcType=BIGINT},
+      </if>
+      <if test="departId != null" >
+        #{departId,jdbcType=BIGINT},
+      </if>
+      1
+    </trim>
+	</insert>
+	<select id="selectTeacherVo" parameterType="java.lang.Long" resultType="com.honestpeak.vo.TeacherVo">
+		select t.id,t.user_id as userId,t.name as name,t.sex as sex,t.phoneno as phoneno,t.email as email from tb_teacher t  where id = #{id}
+	</select>
+	<delete id="deleteMore" parameterType="String" flushCache="false">
+		delete from tb_teacher
+		where id in
+		<foreach item="item" index="index" collection="array" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+	<select id="selectTeacher" parameterType="java.lang.String" resultType="com.honestpeak.model.Teacher">
+		select user_id as userId,name,sex,phoneno,email from tb_teacher where user_id = #{userId}
+	</select>
+</mapper>

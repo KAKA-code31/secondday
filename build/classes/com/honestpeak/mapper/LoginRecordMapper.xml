@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.honestpeak.mapper.LoginRecordMapper">
+	<resultMap id="BaseResultMap" type="com.honestpeak.model.LoginRecord">
+		<id column="id" jdbcType="BIGINT" property="id" />
+		<result column="loginName" jdbcType="VARCHAR" property="loginName" />
+		<result column="loginTime" jdbcType="VARCHAR" property="loginTime" />
+		<result column="loginIP" jdbcType="VARCHAR" property="loginIP" />
+		<result column="loginType" jdbcType="INTEGER" property="loginType" />
+		<result column="loginStatus" jdbcType="INTEGER" property="loginStatus" />
+		<result column="failureType" jdbcType="INTEGER" property="failureType" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, loginName, loginTime, loginIP, loginType, loginStatus, failureType
+	</sql>
+	<select id="selectByPrimaryKey" parameterType="java.lang.Long"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from tb_login_record
+		where id = #{id,jdbcType=BIGINT}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+		delete from tb_login_record
+		where id = #{id,jdbcType=BIGINT}
+	</delete>
+	<insert id="insert" parameterType="com.honestpeak.model.LoginRecord">
+		<selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		insert into tb_login_record (loginName, loginTime, loginIP,
+		loginType, loginStatus, failureType
+		)
+		values (#{loginName,jdbcType=VARCHAR}, #{loginTime,jdbcType=VARCHAR},
+		#{loginIP,jdbcType=VARCHAR},
+		#{loginType,jdbcType=INTEGER}, #{loginStatus,jdbcType=INTEGER}, #{failureType,jdbcType=INTEGER}
+		)
+	</insert>
+	<insert id="insertSelective" parameterType="com.honestpeak.model.LoginRecord">
+		<selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		insert into tb_login_record
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="loginName != null">
+				loginName,
+			</if>
+			<if test="loginTime != null">
+				loginTime,
+			</if>
+			<if test="loginIP != null">
+				loginIP,
+			</if>
+			<if test="loginType != null">
+				loginType,
+			</if>
+			<if test="loginStatus != null">
+				loginStatus,
+			</if>
+			<if test="failureType != null">
+				failureType,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="loginName != null">
+				#{loginName,jdbcType=VARCHAR},
+			</if>
+			<if test="loginTime != null">
+				#{loginTime,jdbcType=VARCHAR},
+			</if>
+			<if test="loginIP != null">
+				#{loginIP,jdbcType=VARCHAR},
+			</if>
+			<if test="loginType != null">
+				#{loginType,jdbcType=INTEGER},
+			</if>
+			<if test="loginStatus != null">
+				#{loginStatus,jdbcType=INTEGER},
+			</if>
+			<if test="failureType != null">
+				#{failureType,jdbcType=INTEGER},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.honestpeak.model.LoginRecord">
+		update tb_login_record
+		<set>
+			<if test="loginName != null">
+				loginName = #{loginName,jdbcType=VARCHAR},
+			</if>
+			<if test="loginTime != null">
+				loginTime = #{loginTime,jdbcType=VARCHAR},
+			</if>
+			<if test="loginIP != null">
+				loginIP = #{loginIP,jdbcType=VARCHAR},
+			</if>
+			<if test="loginType != null">
+				loginType = #{loginType,jdbcType=INTEGER},
+			</if>
+			<if test="loginStatus != null">
+				loginStatus = #{loginStatus,jdbcType=INTEGER},
+			</if>
+			<if test="failureType != null">
+				failureType = #{failureType,jdbcType=INTEGER},
+			</if>
+		</set>
+		where id = #{id,jdbcType=BIGINT}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.honestpeak.model.LoginRecord">
+		update tb_login_record
+		set loginName = #{loginName,jdbcType=VARCHAR},
+		loginTime = #{loginTime,jdbcType=VARCHAR},
+		loginIP = #{loginIP,jdbcType=VARCHAR},
+		loginType = #{loginType,jdbcType=INTEGER},
+		loginStatus = #{loginStatus,jdbcType=INTEGER},
+		failureType = #{failureType,jdbcType=INTEGER}
+		where id = #{id,jdbcType=BIGINT}
+	</update>
+	
+	<select id="getLastLoginRecord" parameterType="java.lang.String" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from tb_login_record
+		where loginName = #{loginName,jdbcType=VARCHAR}
+		and loginType = 1
+		and loginStatus = 1
+		order by id DESC
+		limit 0,1
+	</select>
+</mapper>

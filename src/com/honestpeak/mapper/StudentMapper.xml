@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.honestpeak.mapper.StudentMapper" >
+  <resultMap id="BaseResultMap" type="com.honestpeak.model.Student" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="id" property="stdentId" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="sex" property="sex" jdbcType="INTEGER" />
+    <result column="password" property="password" jdbcType="VARCHAR" />
+    <result column="phoneno" property="phoneno" jdbcType="VARCHAR" />
+    <result column="email" property="email" jdbcType="VARCHAR" />
+    <result column="class_id" property="classId" jdbcType="BIGINT" />
+  </resultMap>
+  <resultMap id="StudentVoMap" type="com.honestpeak.vo.StudentVo">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="user_id" property="userId" jdbcType="VARCHAR" />
+		<result column="phoneno" property="phoneno" jdbcType="VARCHAR" />
+   		<result column="email" property="email" jdbcType="VARCHAR" />
+		<result column="departName" property="departName" jdbcType="VARCHAR" />
+		<result column="majorName" property="majorName" jdbcType="VARCHAR" />
+		<result column="schoolName" property="schoolName" jdbcType="VARCHAR" />
+		<association property="studentClass" column="class_id"
+			select="com.honestpeak.mapper.StudentClassMapper.selectByPrimaryKey"></association>
+	</resultMap>
+  <resultMap id="StudentClassMap" type="com.honestpeak.vo.StudentVo">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="user_id" property="userId" jdbcType="VARCHAR" />
+		<result column="phoneno" property="phoneno" jdbcType="VARCHAR" />
+   		<result column="email" property="email" jdbcType="VARCHAR" />
+		<result column="departName" property="departName" jdbcType="VARCHAR" />
+		<result column="majorName" property="majorName" jdbcType="VARCHAR" />
+		<result column="schoolName" property="schoolName" jdbcType="VARCHAR" />
+	    <association property="department" column="depart_id"
+			select="com.honestpeak.mapper.DepartMapper.selectByPrimaryKey"></association>
+	    <association property="major" column="major_id"
+			select="com.honestpeak.mapper.MajorMapper.selectByPrimaryKey"></association>
+		<association property="studentClass" column="class_id"
+			select="com.honestpeak.mapper.StudentClassMapper.selectByPrimaryKey"></association>
+	</resultMap>
+  <sql id="Base_Column_List" >
+    id, user_id, name, sex, password, phoneno, email, class_id
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from tb_student
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from tb_student
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.honestpeak.model.Student" >
+    insert into tb_student (id, user_id, name, 
+      sex, password, phoneno, 
+      email, class_id)
+    values (#{id,jdbcType=BIGINT}, #{userId,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
+      #{sex,jdbcType=INTEGER}, #{password,jdbcType=VARCHAR}, #{phoneno,jdbcType=VARCHAR}, 
+      #{email,jdbcType=VARCHAR}, #{classId,jdbcType=BIGINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.honestpeak.model.Student" >
+    insert into tb_student
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="sex != null" >
+        sex,
+      </if>
+      <if test="password != null" >
+        password,
+      </if>
+      <if test="phoneno != null" >
+        phoneno,
+      </if>
+      <if test="email != null" >
+        email,
+      </if>
+      <if test="classId != null" >
+        class_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null" >
+        #{sex,jdbcType=INTEGER},
+      </if>
+      <if test="password != null" >
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="phoneno != null" >
+        #{phoneno,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="classId != null" >
+        #{classId,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.honestpeak.model.Student" >
+    update tb_student
+    <set >
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null" >
+        sex = #{sex,jdbcType=INTEGER},
+      </if>
+      <if test="password != null" >
+        password = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="phoneno != null" >
+        phoneno = #{phoneno,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        email = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="classId != null" >
+        class_id = #{classId,jdbcType=BIGINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.honestpeak.model.Student" >
+    update tb_student
+    set user_id = #{userId,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR},
+      sex = #{sex,jdbcType=INTEGER},
+      password = #{password,jdbcType=VARCHAR},
+      phoneno = #{phoneno,jdbcType=VARCHAR},
+      email = #{email,jdbcType=VARCHAR},
+      class_id = #{classId,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="loginUserByLoginName" resultMap="BaseResultMap">
+		SELECT * FROM tb_student WHERE name = #{userName} 
+	</select>
+	<select id="getUserByUserAccount" parameterType="java.lang.String" resultMap="BaseResultMap">
+		SELECT * FROM tb_student WHERE user_id = #{username} limit 0,1
+	</select>
+	<select id="getById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+		SELECT * FROM tb_student WHERE id = #{id}
+	</select>
+	
+	
+	
+	
+	
+	
+<!-- 分页查询 -->
+	<select id="findStudentPage" resultMap="StudentVoMap">
+		SELECT
+			student.*,d.name as departName,m.name   as  majorName,s.name   as  schoolName
+		FROM
+			tb_student   student
+			left  join  tb_class  c  on  c.id=student.class_id
+			left  join  tb_major  m  on  m.id=c.major_id
+			left  join  tb_depart d  on  d.id=m.depart_id
+			left  join  tb_school s  on  s.id=d.school_id
+			
+		<where>
+			<if test="student!=null">
+				<if test="student.userId!=null and student.userId!=''">
+					and user_id LIKE CONCAT('%',#{student.userId},'%') 
+				</if>
+				<if test="student.name!=null and student.name!=''">
+					and student.name LIKE CONCAT('%',#{student.name},'%') 
+				</if>
+				 
+				<if test="student.classId!=null">
+					and class_id = #{student.classId}
+				</if>
+				<if test="student.sex!=null">
+					and sex = #{student.sex}
+				</if>
+			</if>
+		</where>
+		order by student.id desc
+	</select>
+	<select id="selectStudentClass" parameterType="java.lang.String" resultMap="BaseResultMap">
+		select * from tb_student where user_id = #{userId}
+	</select>
+	<select id="selectByUserId" parameterType="java.lang.String" resultType="java.lang.Long">
+		select id from tb_student where user_id = #{userId}
+	</select>
+	<delete id="deleteMore" parameterType="String" flushCache="false">
+		delete from tb_student
+		where id in
+		<foreach item="item" index="index" collection="array" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+	<insert id="importStudent" parameterType="java.util.List" useGeneratedKeys="true">
+		insert into tb_student
+		(user_id,name,password,class_id ,sex,
+			email,phoneno)
+		values
+		<foreach collection="list" item="item" index="index"
+			separator=",">
+			(#{item.userId},#{item.name},#{item.password},#{item.classId},#{item.sex},#{item.email},
+			#{item.phoneno})
+		</foreach>
+		ON DUPLICATE KEY UPDATE 
+		name=IF(VALUES(name)='',name,VALUES(name)),
+		password=IF(VALUES(password)='',password,VALUES(password)),
+		class_id=IF(VALUES(class_id)='',class_id,VALUES(class_id)),
+		sex=IF(VALUES(sex)='',sex,VALUES(sex)),
+		email=IF(VALUES(email)='',email,VALUES(email))
+	</insert>
+	<select id="selectStudentVoByPrimaryKey" resultMap="StudentVoMap"
+		parameterType="java.lang.Long">
+		SELECT
+		stu.id,
+		stu.`name`,
+		stu.user_id,
+		stu.`password`,
+		stu.class_id,
+		stu.sex,
+		stu.email,
+		stu.phoneno
+		FROM
+		tb_student AS stu
+		WHERE
+		stu.id = #{studentId}
+	</select>
+	<select id="selectStudentVoById" resultMap="StudentClassMap"
+		parameterType="java.lang.Long">
+		SELECT
+		stu.id,
+		stu.`name`,
+		stu.user_id,
+		stu.class_id,
+		cla.major_id,
+		ma.depart_id
+		FROM
+		tb_student AS stu,
+		tb_class AS cla,
+		tb_major AS ma
+		WHERE
+		ma.id=cla.major_id
+		and
+		cla.id=stu.class_id
+		and
+		stu.id = #{studentId}
+	</select>
+	<select id="selectIds" parameterType="java.lang.Long" resultType="java.lang.Long">
+		select id from tb_student where class_id = #{classId}
+	</select>
+	<select id="selectStudent" parameterType="java.lang.String" resultType="com.honestpeak.model.Student">
+		select id as stdentId ,user_id as userId,name,sex,phoneno,email ,class_id as classId from tb_student where user_id = #{userId}
+	</select>
+	<select id="getClassIdById" parameterType="java.lang.Long" resultType="java.lang.Long">
+		select class_id from tb_student where id = #{userId}
+	</select>
+	<select id="selectStudentByClassId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+	select id,user_id,name from tb_student where class_id = #{classId} 
+	and id not in (select student_id from tb_selectcourse 
+	where expriment_teacher_id in (select id from tb_experiment_teacher 
+	where experiment_id in (select id from tb_experiment where course_id=#{courseId})))
+	</select>
+	<select id="selectStudentxh" parameterType="java.lang.Long" resultType="java.lang.String">
+		select user_id as userId  from tb_student where id = #{studentid}
+	</select>
+	<select id="selectStudentByselectCourseId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+		select * from tb_student where id=(select student_id from tb_selectcourse where id=#{selectCourseId})
+	</select>
+</mapper>

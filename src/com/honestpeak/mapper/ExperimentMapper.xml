@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.honestpeak.mapper.ExperimentMapper" >
+  <resultMap id="BaseResultMap" type="com.honestpeak.model.Experiment" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="code" property="code" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="course_id" property="courseId" jdbcType="BIGINT" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, code, name, course_id, description
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from tb_experiment
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from tb_experiment
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.honestpeak.model.Experiment" >
+    insert into tb_experiment (id, code, name, 
+      course_id, description)
+    values (#{id,jdbcType=BIGINT}, #{code,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
+      #{courseId,jdbcType=BIGINT}, #{description,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.honestpeak.model.Experiment" >
+    insert into tb_experiment
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="code != null" >
+        code,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="courseId != null" >
+        course_id,
+      </if>
+      <if test="description != null" >
+        description,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="code != null" >
+        #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="courseId != null" >
+        #{courseId,jdbcType=BIGINT},
+      </if>
+      <if test="description != null" >
+        #{description,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.honestpeak.model.Experiment" >
+    update tb_experiment
+    <set >
+      <if test="code != null" >
+        code = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="courseId != null" >
+        course_id = #{courseId,jdbcType=BIGINT},
+      </if>
+      <if test="description != null" >
+        description = #{description,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.honestpeak.model.Experiment" >
+    update tb_experiment
+    set code = #{code,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR},
+      course_id = #{courseId,jdbcType=BIGINT},
+      description = #{description,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="selctByCourseId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+  	select * from tb_experiment where course_id = #{courseId}
+  </select>
+  <insert id="insertExperiment">
+  	insert into tb_experiment(code,name,course_id,description)
+  	values(#{experimentCode},#{experimentName},#{courseId},#{description})
+  </insert>
+  <select id="selectByExperimentCodeAndCourseId" resultType="java.lang.Long">
+  	select id from tb_experiment where code = #{experimentCode} and course_id = #{courseId}
+  </select>
+  <select id="selectByCourseId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+  	select id from tb_experiment where course_id = #{id}
+  </select>
+  <select id="selectSubject" parameterType="java.lang.Long" resultMap="BaseResultMap">
+  	select  
+  	<include refid="Base_Column_List" />
+  	from tb_experiment where course_id = #{courseId}
+  </select>
+  <select id="getNameByEid" parameterType="java.lang.Long" resultType="java.lang.String">
+  	select  
+  	name
+  	from tb_experiment where id = #{experimentId}
+  </select>
+</mapper>

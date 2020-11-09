@@ -1,0 +1,23 @@
+/* 分页样式 */
+.dataTables_info{width: 30%;float: left;text-align: left;margin-top: 20px;}
+.dataTables_paginate{width: 60%; float: left;text-align: right;margin-top: 20px;}
+.page_goto{width: 10%; float: right;text-align: right;margin-top: 20px;}
+.gotoPageInput{width: 45%; height: 26px;border: 1px solid #ccc;}
+.gotoPageBtn{width: 45%; height: 28px;margin-left: 5px;}
+.paginate_button{    border: 1px solid #ccc;
+    cursor: pointer;
+    display: inline-block;
+    margin-left: 2px;
+    text-align: center;
+    text-decoration: none;
+    color: #666;
+    height: 26px;
+    line-height: 26px;
+    text-decoration: none;
+    margin: 0 0 6px 6px;
+    padding: 0 10px;
+    font-size: 14px;}
+.current{background: #5a98de;
+    color: #fff;}
+.paginate_button:hover{background: #5a98de;
+    color: #fff;}

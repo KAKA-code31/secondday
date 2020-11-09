@@ -1,0 +1,618 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.honestpeak.mapper.SelectCourseMapper" >
+  <resultMap id="BaseResultMap" type="com.honestpeak.model.SelectCourse" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="class_id" property="classId" jdbcType="BIGINT" />
+    <result column="student_id" property="studentId" jdbcType="BIGINT" />
+    <result column="expriment_teacher_id" property="exprimentTeacherId" jdbcType="BIGINT" />
+    <result column="fake_class_id" property="fakeclassId" jdbcType="BIGINT" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="flag" property="flag" jdbcType="INTEGER" />
+  </resultMap>
+  <resultMap id="VoMap" type="com.honestpeak.vo.SelectCourseVo" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+     <result column="courseId" property="courseId" jdbcType="INTEGER" />
+     <result column="coursecode" property="coursecode" jdbcType="VARCHAR" />
+     <result column="coursename" property="coursename" jdbcType="VARCHAR" />
+     <result column="teacherId" property="teacherId" jdbcType="VARCHAR" />
+     <result column="teachername" property="teachername" jdbcType="VARCHAR" />
+     <result column="year" property="year" jdbcType="INTEGER" />
+     <result column="term" property="term" jdbcType="INTEGER" />
+  </resultMap>
+  <resultMap id="ExperimentVoMap" type="com.honestpeak.vo.ExperimentVo" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+     <result column="courseId" property="courseId" jdbcType="BIGINT" />
+     <result column="etId" property="etId" jdbcType="BIGINT" />
+     <result column="courseCode" property="courseCode" jdbcType="VARCHAR" />
+     <result column="courseName" property="courseName" jdbcType="VARCHAR" />
+     <result column="experimentCode" property="experimentCode" jdbcType="VARCHAR" />
+     <result column="experimentName" property="experimentName" jdbcType="VARCHAR" />
+     <result column="departName" property="departName" jdbcType="VARCHAR" />
+     <result column="majorName" property="majorName" jdbcType="VARCHAR" />
+     <result column="className" property="className" jdbcType="VARCHAR" />
+     <result column="studentCode" property="studentCode" jdbcType="VARCHAR" />
+     <result column="studentName" property="studentName" jdbcType="VARCHAR" />
+     <result column="reportPath" property="reportPath" jdbcType="VARCHAR" />
+     <result column="picturePath" property="picturePath" jdbcType="VARCHAR" />
+     <result column="sourcecodePath" property="sourcecodePath" jdbcType="VARCHAR" />
+     <result column="teacherName" property="teacherName" jdbcType="VARCHAR" />
+     <result column="scId" property="scId" jdbcType="VARCHAR" />
+     <result column="score" property="score" jdbcType="DOUBLE" />
+     <result column="checkflag" property="checkflag" jdbcType="INTEGER" />
+     <result column="status" property="status" jdbcType="INTEGER" />
+      <result column="year" property="year" jdbcType="INTEGER" />
+     <result column="term" property="term" jdbcType="INTEGER" />
+     <result column="description" property="description" jdbcType="VARCHAR" />
+     <result column="cdescription" property="cdescription" jdbcType="VARCHAR" />
+     <result column="score1" property="score1" jdbcType="VARCHAR" />
+     <result column="count" property="count" jdbcType="INTEGER" />
+     <result column="repetition" property="repetition" jdbcType="DOUBLE" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    id, class_id, student_id, expriment_teacher_id,status,fake_class_id,flag
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from tb_selectcourse
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from tb_selectcourse
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.honestpeak.model.SelectCourse" >
+    insert into tb_selectcourse (id, class_id, student_id, 
+      expriment_teacher_id,status,fake_class_id,flag)
+    values (#{id,jdbcType=BIGINT}, #{classId,jdbcType=BIGINT}, #{studentId,jdbcType=BIGINT}, 
+      #{exprimentTeacherId,jdbcType=BIGINT},#{status,jdbcType=INTEGER},#{fakeclassId},#{flag})
+  </insert>
+  <insert id="insertStudentDsign" parameterType="com.honestpeak.model.SelectCourse">
+    insert into tb_selectcourse (id, class_id, student_id, 
+      expriment_teacher_id,status,fake_class_id)
+    values 
+		<foreach item="item" index="index" collection="list" separator=",">
+	    (
+	     null,
+	     #{item.classId,jdbcType=BIGINT}, 
+	     #{item.studentId,jdbcType=BIGINT}, 
+	     #{item.exprimentTeacherId,jdbcType=BIGINT},
+	     0,
+	     #{item.fakeclassId})
+		</foreach>    
+  </insert>
+  <insert id="insertStudentDsign1" parameterType="java.lang.Long">
+    insert into tb_selectcourse (id, class_id, student_id, 
+      expriment_teacher_id,status,fake_class_id,flag)
+    values 
+	    (
+	     null,
+	     #{classId,jdbcType=BIGINT}, 
+	     #{studentId,jdbcType=BIGINT}, 
+	     #{exprimentTeacherId,jdbcType=BIGINT},
+	     0,
+	     #{fakeclassId},
+	     1)   
+  </insert>
+  <insert id="inserts1" parameterType="com.honestpeak.model.SelectCourse" >
+    insert into tb_selectcourse (class_id, student_id, 
+      expriment_teacher_id,status,fake_class_id,flag)
+    values ( #{classId,jdbcType=BIGINT}, #{studentId,jdbcType=BIGINT}, 
+      #{etId,jdbcType=BIGINT},0,#{fakeclassId,jdbcType=BIGINT},1)
+  </insert>
+  <insert id="insertSelective" parameterType="com.honestpeak.model.SelectCourse" >
+    insert into tb_selectcourse
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="classId != null" >
+        class_id,
+      </if>
+      <if test="studentId != null" >
+        student_id,
+      </if>
+      <if test="exprimentTeacherId != null" >
+        expriment_teacher_id,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="classId != null" >
+        #{classId,jdbcType=BIGINT},
+      </if>
+      <if test="studentId != null" >
+        #{studentId,jdbcType=BIGINT},
+      </if>
+      <if test="exprimentTeacherId != null" >
+        #{exprimentTeacherId,jdbcType=BIGINT},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.honestpeak.model.SelectCourse" >
+    update tb_selectcourse
+    <set >
+      <if test="classId != null" >
+        class_id = #{classId,jdbcType=BIGINT},
+      </if>
+      <if test="studentId != null" >
+        student_id = #{studentId,jdbcType=BIGINT},
+      </if>
+      <if test="exprimentTeacherId != null" >
+        expriment_teacher_id = #{exprimentTeacherId,jdbcType=BIGINT},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateClassByStudentId" parameterType="com.honestpeak.model.SelectCourse" >
+    update tb_selectcourse
+    <set >
+      <if test="classId != null" >
+        class_id = #{classId,jdbcType=BIGINT},
+      </if>
+    </set>
+    where student_id = #{studentId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.honestpeak.model.SelectCourse" >
+    update tb_selectcourse
+    set class_id = #{classId,jdbcType=BIGINT},
+      student_id = #{studentId,jdbcType=BIGINT},
+      expriment_teacher_id = #{exprimentTeacherId,jdbcType=BIGINT}
+      status = #{status,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="findSelectCoursePage" resultMap = "VoMap">
+  	select ex.id as id,c.id as courseId,c.code as coursecode,c.name as coursename,
+  	t.user_id as teacherId,t.name as teachername,e.year as year,e.term as term from tb_selectcourse  s
+		LEFT JOIN tb_experiment_teacher e on e.id = s.expriment_teacher_id
+		LEFT JOIN tb_experiment ex on ex.id = e.experiment_id
+		LEFT JOIN tb_course c on c.id = ex.course_id
+		LEFT JOIN tb_teacher t on t.id = e.teacher_id
+  	<where>
+  		<if test="selectCourseVo.studentId != null">
+  			s.student_id = #{selectCourseVo.studentId}
+  		</if>
+  		<if test="selectCourseVo.teacherId != null">
+  			and t.user_id = #{selectCourseVo.teacherId}
+  		</if>
+  		<if test="selectCourseVo.coursecode != null and selectCourseVo.coursecode != ''">
+  			and c.code = #{selectCourseVo.coursecode}
+  		</if>
+  		<if test="selectCourseVo.coursename != null and selectCourseVo.coursename != ''">
+  			and c.name LIKE CONCAT('%',#{selectCourseVo.coursename},'%') 
+  		</if>
+  		<if test="selectCourseVo.year != null and selectCourseVo.year != ''">
+  			and e.year = #{selectCourseVo.year}
+  		</if>
+  		<if test="selectCourseVo.term != null and selectCourseVo.term != ''">
+  			and e.term = #{selectCourseVo.term }
+  		</if>
+  	</where>
+  	GROUP BY c.id
+  </select>
+  <select id="selectExperiments" resultMap = "ExperimentVoMap">
+  	select cour.id as courseId,sel.id as id,e.code as experimentCode,e.name as experimentName,d.name as departName,m.name as majorName,
+  	c.name as className,s.user_id as studentCode,s.name as studentName,sel.status as status,sco.score as score from tb_selectcourse sel
+  	left join tb_score sco on sco.selectcourse_id = sel.id
+  	left join tb_experiment_teacher et on et.id = sel.expriment_teacher_id
+  	left join tb_class  c on c.id = sel.class_id 
+  	left join tb_major m on m.id = c.major_id
+  	left join tb_depart d on d.id = m.depart_id
+  	left join tb_student s on s.id = sel.student_id
+  	left join tb_experiment e on e.id = et.experiment_id
+  	left join tb_course cour on cour.id = e.course_id
+  	left join tb_teacher t on t.id = et.teacher_id
+  	<where>
+  		<if test="experimentVo.studentId != null">
+  			sel.student_id = #{experimentVo.studentId}
+  		</if>
+  		<if test="experimentVo.teacherId != null">
+  			and t.user_id = #{experimentVo.teacherId}
+  		</if>
+  		<if test="experimentVo.experimentId != null">
+  			and e.id = #{experimentVo.experimentId}
+  		</if>
+  		<if test="experimentVo.departId != null">
+  			and d.id = #{experimentVo.departId}
+  		</if>
+  		<if test="experimentVo.majorId != null">
+  			and m.id = #{experimentVo.majorId}
+  		</if>
+  		<if test="experimentVo.classId != null">
+  			and c.id = #{experimentVo.classId}
+  		</if>
+  		<if test="id != null">
+  			and cour.id = #{id}
+  		</if>
+  	</where>
+  </select>
+  <select id="countByExprimentTeacherId" resultType="int" parameterType = "java.lang.Long">
+  	select count(*) from tb_selectcourse where expriment_teacher_id = #{userId}
+  </select>
+  <select id="selectExperimentBySid" parameterType="java.lang.Long" resultMap="ExperimentVoMap">
+  	select s.sourcecodepath as sourcecodePath,s.reportpath as reportpath, c.id as courseId,cla.id as classId,et.id as etId,sel.id as id,e.name as experimentName,sel.fake_class_id as fakeclassId,sel.flag as flag from tb_selectcourse sel 
+  	left join tb_experiment_teacher et on et.id = sel.expriment_teacher_id
+  	left join tb_experiment e on e.id = et.experiment_id
+  	left join tb_course c on c.id = e.course_id
+  	left join tb_class cla on cla.id = sel.class_id
+  	left join tb_score s on s.selectcourse_id = sel.id
+  	where sel.id =#{id}
+  </select>
+  <insert id="insertintoScore" parameterType="com.honestpeak.vo.ExperimentVo">
+  	insert into tb_score
+	<trim prefix="(" suffix=")" suffixOverrides="," >
+	      <if test="id != null" >
+	        selectcourse_id,
+	      </if>
+	      <if test="reportPath != null" >
+	        reportpath,
+	      </if>
+	      <if test="picturePath != null" >
+	        picturepath,
+	      </if>
+	      <if test="sourcecodePath != null" >
+	        sourcecodepath,
+	      </if>
+	    </trim>
+	    <trim prefix="values (" suffix=")" suffixOverrides="," >
+	      <if test="id != null" >
+	        #{id,jdbcType=BIGINT},
+	      </if>
+	      <if test="reportPath != null" >
+	        #{reportPath,jdbcType=VARCHAR},
+	      </if>
+	      <if test="picturePath != null" >
+	        #{picturePath,jdbcType=VARCHAR},
+	      </if>
+	      <if test="sourcecodePath != null" >
+	        #{sourcecodePath,jdbcType=VARCHAR},
+	      </if>
+    	</trim>
+  </insert>
+  <update id="updateScore" parameterType="com.honestpeak.vo.ExperimentVo">
+  	update tb_score
+    <set >
+      <if test="reportPath != null and reportPath != ''" >
+        reportPath = #{reportPath,jdbcType=VARCHAR},
+      </if>
+      <if test="picturePath != null and picturePath != ''" >
+        picturePath = #{picturePath,jdbcType=VARCHAR},
+      </if>
+      <if test="sourcecodePath != null and sourcecodePath != ''" >
+        sourcecodePath = #{sourcecodePath,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where selectcourse_id = #{id,jdbcType=BIGINT}
+  
+  </update>
+  <update id="updateStatus" parameterType="java.lang.Long">
+  	update tb_selectcourse set status = 1 where id = #{id}
+  </update>
+  <select id="selectStudents" resultMap = "ExperimentVoMap">
+  	select CONCAT(sel.student_id,cour.id) as scId,cour.code as courseCode,cour.name as courseName,d.name as departName,m.name as majorName,
+  	e.name as experimentName,e.code as experimentCode,
+  	c.name as className,s.user_id as studentCode,s.name as studentName,t.name as teacherName,et.year as year,et.term as term from tb_selectcourse sel
+  	left join tb_experiment_teacher et on et.id = sel.expriment_teacher_id
+  	left join tb_class  c on c.id = sel.class_id 
+  	left join tb_major m on m.id = c.major_id
+  	left join tb_depart d on d.id = m.depart_id
+  	left join tb_student s on s.id = sel.student_id
+  	left join tb_experiment e on e.id = et.experiment_id
+  	left join tb_course cour on cour.id = e.course_id
+  	left join tb_teacher t on t.id = et.teacher_id
+  	<where>
+  		<if test="experimentVo.studentId != null and experimentVo.studentId !=''">
+  			sel.student_id = #{experimentVo.studentId}
+  		</if>
+  		<if test="experimentVo.studentName != null and experimentVo.studentName != ''">
+  			and s.name like CONCAT('%',#{experimentVo.studentName},'%')
+  		</if>
+  		<if test="experimentVo.studentCode != null and experimentVo.studentCode != ''">
+  			and s.user_id = #{experimentVo.studentCode}
+  		</if>
+  		<if test="experimentVo.courseName != null and experimentVo.courseName != ''">
+  			and cour.name like CONCAT('%',#{experimentVo.courseName},'%')
+  		</if>
+  		<if test="experimentVo.courseCode != null and experimentVo.courseCode != ''">
+  			and cour.code = #{experimentVo.courseCode}
+  		</if>
+  		<if test="experimentVo.teacherName != null and experimentVo.teacherName != ''">
+  			and t.name = #{experimentVo.teacherName}
+  		</if>
+  		<if test="experimentVo.teacherId != null and experimentVo.teacherId!=''">
+  			and t.user_id = #{experimentVo.teacherId}
+  		</if>
+  		<if test="experimentVo.experimentCode != null and experimentVo.experimentCode !=''">
+  			and e.code = #{experimentVo.experimentCode}
+  		</if>
+  		<if test="experimentVo.experimentName != null and experimentVo.experimentName !=''">
+  		and e.name LIKE CONCAT('%',#{experimentVo.experimentName},'%') 
+  		</if>
+  	</where>
+  	GROUP BY cour.id,et.year,et.term,s.id,t.id ORDER BY cour.id desc,et.id,c.id,s.id
+  </select>
+  <select id="selectAllCoursePage" resultMap = "ExperimentVoMap">
+  	select cour.id as id,cour.code as courseCode,cour.name as courseName,cour.count as count,cour.description as description,
+  	t.user_id as teacherId,t.name as teacherName,et.year as year,et.term as term from tb_course cour
+  	left join tb_experiment e on e.course_id = cour.id
+  	left join tb_experiment_teacher et on et.experiment_id = e.id
+  	left join tb_teacher t on t.id =  et.teacher_id
+  	<where>
+  		<if test="experimentVo.teacherId != null">
+  			and t.user_id = #{experimentVo.teacherId}
+  		</if>
+  		<if test="experimentVo.courseName != null and experimentVo.courseName != ''">
+  			and cour.name like CONCAT('%',#{experimentVo.courseName},'%')
+  		</if>
+  		<if test="experimentVo.courseCode != null and experimentVo.courseCode != ''">
+  			and cour.code = #{experimentVo.courseCode}
+  		</if>
+  	</where>
+  	GROUP BY cour.id
+  </select>
+  <insert id="inserts">
+	insert IGNORE into tb_selectcourse(class_id,student_id,expriment_teacher_id,status)
+	values(#{classId},#{studentId},#{etId},0)
+	</insert>
+	<select id="selectExperimentByCourseId" parameterType="java.lang.Long" resultMap="ExperimentVoMap">
+		select e.id as id,e.code as experimentCode,e.name as experimentName,e.description as description from tb_experiment e where e.course_id = #{id}
+	</select>
+	<select id="selectScoreBySid" parameterType="java.lang.Long" resultMap="ExperimentVoMap">
+		select s.repetition as repetition,s.score as score,sel.id as Id,s.reportpath as reportPath,s.picturepath as picturePath,s.sourcecodepath as sourcecodePath from tb_score s 
+		LEFT JOIN tb_selectcourse sel on sel.id = s.selectcourse_id
+		where s.selectcourse_id = #{id}
+	</select>
+	<select id="selectByStudentId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+		select * from tb_selectcourse
+		where student_id = #{studentId}
+	</select>
+	<select id="getSelIdByPath" parameterType="java.lang.String" resultType="java.lang.Long">
+		select sel.id as Id from tb_selectcourse sel
+		LEFT JOIN tb_score s  on sel.id = s.selectcourse_id
+		where s.reportpath = #{path}
+	</select>
+	<update id="insertScore">
+		update tb_score set score = #{score} where selectcourse_id = #{id}
+	</update>
+	<select id="getListOfScoreByCourse" parameterType="java.lang.Long" resultMap="ExperimentVoMap">
+		select GROUP_CONCAT(CASE WHEN sco.score IS NULL THEN 0 ELSE sco.score END ORDER BY e.id) AS score1, t.name as teacherName,m.name as majorName,d.name as departName,e.`name` as experimentName,s.user_id as studentCode,s.`name` as studentName,cla.name as className,c.name as courseName,
+		et.`year` as year,et.term as term
+		from tb_selectcourse sel
+		LEFT JOIN tb_experiment_teacher et ON et.id = sel.expriment_teacher_id
+		LEFT JOIN tb_experiment e ON e.id =  et.experiment_id
+		LEFT JOIN tb_teacher t on t.id = et.teacher_id
+		LEFT JOIN tb_course c ON c.id =  e.course_id
+		LEFT JOIN tb_student s ON s.id = sel.student_id
+		LEFT JOIN tb_class cla ON cla.id = sel.class_id
+		left join tb_major m on m.id = cla.major_id
+		left join tb_depart d on d.id = m.depart_id
+		LEFT JOIN tb_score sco on sco.selectcourse_id = sel.id
+		WHERE c.id =#{cid} and ((cla.id = #{classId} and sel.flag=0) or (sel.flag=1 and sel.fake_class_id=#{classId})) GROUP BY s.id,c.id
+	</select>
+	<select id="getListOfExperimentScoreByCourse" parameterType="java.lang.Long" resultMap="ExperimentVoMap">
+		SELECT sel.id as id,stu.user_id as studentCode,stu.name as studentName,cla.name as className,et.year as year,et.term as term,
+		e.name as experimentName,s.score as score,s.repetition as repetition,c.name as courseName,t.name as teacherName
+		from tb_selectcourse sel 
+		LEFT JOIN tb_score s on s.selectcourse_id = sel.id
+		LEFT JOIN tb_experiment_teacher et on et.id = sel.expriment_teacher_id
+		LEFT JOIN tb_experiment e on e.id = et.experiment_id
+		LEFT JOIN tb_course c on c.id = e.course_id
+		LEFT JOIN tb_teacher t on t.id = et.teacher_id
+		LEFT JOIN tb_student stu on stu.id = sel.student_id
+		LEFT JOIN tb_class cla on cla.id = stu.class_id
+		#LEFT JOIN tb_judge j on j.course_id = c.id
+		#LEFT JOIN tb_judge_selectcourse js on js.judge_id = j.id
+		where c.id =#{cid} and e.id = #{experimentId} and ((cla.id = #{classId} and sel.flag=0) or (sel.flag=1 and sel.fake_class_id=#{classId}))
+	</select>
+	<select id="getListOfExperimentScoreByDesignCourse" parameterType="java.lang.Long" resultMap="ExperimentVoMap">
+		SELECT sel.id as id,stu.user_id as studentCode,stu.name as studentName,cla.name as className,et.year as year,et.term as term,
+		e.name as experimentName,s.score as score,s.repetition as repetition,c.name as courseName,t.name as teacherName
+		from tb_selectcourse sel 
+		LEFT JOIN tb_score s on s.selectcourse_id = sel.id
+		LEFT JOIN tb_experiment_teacher et on et.id = sel.expriment_teacher_id
+		LEFT JOIN tb_experiment e on e.id = et.experiment_id
+		LEFT JOIN tb_course c on c.id = e.course_id
+		LEFT JOIN tb_teacher t on t.id = et.teacher_id
+		LEFT JOIN tb_student stu on stu.id = sel.student_id
+		LEFT JOIN tb_class cla on cla.id = stu.class_id
+		#LEFT JOIN tb_judge j on j.course_id = c.id
+		#LEFT JOIN tb_judge_selectcourse js on js.judge_id = j.id
+		where c.id =#{cid} and e.id in (select id from tb_experiment where course_id=#{cid}) and ((cla.id = #{classId} and sel.flag=0) or (sel.flag=1 and sel.fake_class_id=#{classId}))
+	</select>
+	<select id="selectScorePage" resultMap = "ExperimentVoMap">
+  	select stu.user_id as studentCode,stu.name as studentName,cla.name as className,sc.id as id,c.name as courseName,e.name as experimentName,s.repetition as repetition,s.score as score,
+  	et.year as year,et.term as term
+  	 from tb_score s 
+	LEFT JOIN tb_selectcourse sc on sc.id = s.selectcourse_id
+	LEFT JOIN tb_experiment_teacher et on et.id = sc.expriment_teacher_id
+	LEFT JOIN tb_experiment e on e.id = et.experiment_id
+	LEFT JOIN tb_course c on c.id = e.course_id
+	LEFT JOIN tb_student stu on stu.id = sc.student_id
+	LEFT JOIN tb_teacher t on t.id = et.teacher_id
+	LEFT JOIN tb_class cla on cla.id = stu.class_id
+	LEFT JOIN tb_major m on m.id = cla.major_id 
+	LEFT JOIN tb_depart d on d.id = m.depart_id
+  	<where>
+  		<if test="experimentVo.studentId != null">
+  			stu.id = #{experimentVo.studentId}
+  		</if>
+  		<if test="experimentVo.teacherId != null">
+  			and t.user_id = #{experimentVo.teacherId}
+  		</if>
+  		<if test="experimentVo.courseCode != null and experimentVo.courseCode != ''">
+  			and c.code = #{experimentVo.courseCode}
+  		</if>
+  		<if test="experimentVo.courseName != null and experimentVo.courseName != ''">
+  			and c.name LIKE CONCAT('%',#{experimentVo.courseName},'%') 
+  		</if>
+  		<if test="experimentVo.year != null and experimentVo.year != ''">
+  			and et.year = #{experimentVo.year}
+  		</if>
+  		<if test="experimentVo.term != null and experimentVo.term != ''">
+  			and et.term = #{experimentVo.term }
+  		</if>
+  		<if test="experimentVo.experimentId != null">
+  			and e.id = #{experimentVo.experimentId}
+  		</if>
+  		<if test="experimentVo.courseId != null">
+  			and c.id = #{experimentVo.courseId}
+  		</if>
+  		<if test="experimentVo.departId != null">
+  			and d.id = #{experimentVo.departId}
+  		</if>
+  		<if test="experimentVo.majorId != null">
+  			and m.id = #{experimentVo.majorId}
+  		</if>
+  		<if test="experimentVo.classId != null">
+  			and cla.id = #{experimentVo.classId}
+  		</if>
+  		<if test="experimentVo.className != null and experimentVo.className != ''">
+  			and cla.name LIKE CONCAT('%',#{experimentVo.className},'%') 
+  		</if>
+  		<if test="experimentVo.studentCode != null and experimentVo.studentCode != ''">
+  			and stu.user_id = #{experimentVo.studentCode} 
+  		</if>
+  		and s.score is not null
+  	</where>
+  </select>
+	<select id="selectHistoryPage" resultMap = "ExperimentVoMap">
+  	select sc.id as id,c.name as courseName,e.name as experimentName,s.repetition as repetition,s.score as score,
+  	et.year as year,et.term as term,sc.status as status
+  	 from tb_score s 
+	LEFT JOIN tb_selectcourse sc on sc.id = s.selectcourse_id
+	LEFT JOIN tb_experiment_teacher et on et.id = sc.expriment_teacher_id
+	LEFT JOIN tb_experiment e on e.id = et.experiment_id
+	LEFT JOIN tb_course c on c.id = e.course_id
+	LEFT JOIN tb_student stu on stu.id = sc.student_id
+	LEFT JOIN tb_teacher t on t.id = et.teacher_id
+  	<where>
+  		<if test="experimentVo.studentId != null">
+  			stu.id = #{experimentVo.studentId}
+  		</if>
+  		<if test="experimentVo.teacherId != null">
+  			and t.user_id = #{experimentVo.teacherId}
+  		</if>
+  		<if test="experimentVo.courseCode != null and experimentVo.courseCode != ''">
+  			and c.code = #{experimentVo.courseCode}
+  		</if>
+  		<if test="experimentVo.courseName != null and experimentVo.courseName != ''">
+  			and c.name LIKE CONCAT('%',#{experimentVo.courseName},'%') 
+  		</if>
+  		<if test="experimentVo.year != null and experimentVo.year != ''">
+  			and et.year = #{experimentVo.year}
+  		</if>
+  		<if test="experimentVo.term != null and experimentVo.term != ''">
+  			and et.term = #{experimentVo.term }
+  		</if>
+  		and sc.status = 1
+  	</where>
+  </select>
+  <select id="getCoursesByStudentId" parameterType="java.lang.Long" resultMap="ExperimentVoMap">
+	select stu.class_id as classId,et.id as etId,c.id as courseId,c.name as courseName from tb_selectcourse sel 
+	LEFT JOIN tb_experiment_teacher et ON et.id = sel.expriment_teacher_id
+	LEFT JOIN tb_experiment e ON e.id = et.experiment_id
+	LEFT JOIN tb_course c ON c.id = e.course_id
+	LEFT JOIN tb_student stu ON stu.id = sel.student_id
+	WHERE stu.id =#{userId} and sel.status=0
+	GROUP BY c.id
+  </select>
+  <select id="getCoursesByTeacherId" parameterType="java.lang.Long" resultMap="ExperimentVoMap">
+	SELECT c.id as courseId,c.name as courseName from tb_experiment_teacher et 
+	LEFT JOIN tb_experiment e on e.id = et.experiment_id
+	LEFT JOIN tb_course c on c.id = e.course_id
+	where et.teacher_id=#{userId}
+	GROUP BY c.id
+  </select>
+  <select id="getExperiment"  resultMap="ExperimentVoMap">
+  	SELECT sel.id as id,e.id as experimentId,e.name as experimentName FROM tb_experiment e
+	LEFT JOIN tb_course cour on cour.id = e.course_id
+	LEFT JOIN tb_experiment_teacher et on et.experiment_id = e.id
+	LEFT JOIN tb_selectcourse sel on sel.expriment_teacher_id = et.id
+	LEFT JOIN tb_score sco on sco.selectcourse_id = sel.id
+	where sel.student_id = #{stuId} and cour.id = #{courseId} and sel.status=0
+  </select>
+  <select id="findSelectCoursePage1" resultMap = "ExperimentVoMap">
+  	select cla.id as classId,et.id as etId,c.name as courseName,et.year as year,et.term as term,c.id as courseId,sel.id as id,e.code as experimentCode,e.name as experimentName,d.name as departName,m.name as majorName,
+  	cla.name as className,stu.user_id as studentCode,stu.name as studentName,sel.status as status,s.score as score,s.checkflag as checkflag
+  	from tb_selectcourse sel 
+	LEFT JOIN tb_experiment_teacher et on et.id =  sel.expriment_teacher_id
+	LEFT JOIN tb_experiment e on e.id = et.experiment_id
+	LEFT JOIN tb_course c on c.id = e.course_id
+	LEFT JOIN tb_teacher t on t.id = et.teacher_id
+	LEFT JOIN tb_student stu on stu.id = sel.student_id
+	LEFT JOIN tb_class cla on cla.id =  stu.class_id
+	LEFT JOIN tb_major m on m.id = cla.major_id
+	LEFT JOIN tb_depart d on d.id = m.depart_id	
+	LEFT JOIN tb_score s on s.selectcourse_id = sel.id
+  	<where>
+  		<if test="experimentVo.teacherId != null">
+  			and t.user_id = #{experimentVo.teacherId}
+  		</if>
+  		<if test="experimentVo.experimentId != null">
+  			and e.id = #{experimentVo.experimentId}
+  		</if>
+  		<if test="experimentVo.courseId != null">
+  			and c.id = #{experimentVo.courseId}
+  		</if>
+  		<if test="experimentVo.year != null">
+  			and et.year = #{experimentVo.year}
+  		</if>
+  		<if test="experimentVo.term != null">
+  			and et.term = #{experimentVo.term}
+  		</if>
+  		<if test="experimentVo.departId != null">
+  			and d.id = #{experimentVo.departId}
+  		</if>
+  		<if test="experimentVo.majorId != null">
+  			and m.id = #{experimentVo.majorId}
+  		</if>
+  		<if test="experimentVo.classId != null">
+  			and cla.id = #{experimentVo.classId}
+  		</if>
+  		<if test="experimentVo.className != null and experimentVo.className != ''">
+  			and cla.name LIKE CONCAT('%',#{experimentVo.className},'%') 
+  		</if>
+  		<if test="experimentVo.studentCode != null and experimentVo.studentCode != ''">
+  			and stu.user_id = #{experimentVo.studentCode} 
+  		</if>
+  		and sel.status = 1
+  	</where>
+  	 order by s.score,sel.expriment_teacher_id,sel.student_id
+  </select>
+  <select id="getExperimentByCourseId" parameterType="java.lang.Long" resultMap="ExperimentVoMap">
+  	select e.id as experimentId,e.name as experimentName from tb_experiment e where e.course_id = #{courseId}
+  </select>
+  <select id="getIdByStuIdAndEtId" resultType="java.lang.Long">
+  	select id from tb_selectcourse where student_id = #{userId} and expriment_teacher_id = #{etId}
+  </select>
+  <select id="getCoursesByTeacherIdAndCount" parameterType="java.lang.Long" resultMap="ExperimentVoMap">
+	SELECT c.id as courseId,c.name as courseName from tb_experiment_teacher et 
+	LEFT JOIN tb_experiment e on e.id = et.experiment_id
+	LEFT JOIN tb_course c on c.id = e.course_id
+	LEFT JOIN tb_selectcourse sel on sel.expriment_teacher_id = et.id
+	LEFT JOIN tb_score sc on sc.selectcourse_id = sel.id
+	where et.teacher_id=#{userId} and sc.reportpath is not null
+	GROUP BY c.id having count(sc.id)>0
+  </select>
+	<select id="getClassIdByIdForDesign" parameterType="java.lang.Long" resultType="java.lang.Long">
+		select fake_class_id from tb_selectcourse where student_id = #{userId} and expriment_teacher_id in 
+	(select id from tb_experiment_teacher where experiment_id=#{experimentId})		
+	</select>
+	<select id="getFlag" parameterType="java.lang.Long" resultType="java.lang.Integer">
+	select flag from tb_selectcourse where student_id = #{userId} and expriment_teacher_id in 
+	(select id from tb_experiment_teacher where experiment_id=#{experimentId})	
+	</select>
+</mapper>

@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.honestpeak.mapper.MajorMapper" >
+  <resultMap id="BaseResultMap" type="com.honestpeak.model.Major" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="code" property="code" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="depart_id" property="departId" jdbcType="BIGINT" />
+  </resultMap>
+   <resultMap id="MajorVoMap" type="com.honestpeak.vo.MajorVo" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+     <result column="depart_id" property="departId" jdbcType="BIGINT" />
+    <association property="department" column="depart_id"
+    select="com.honestpeak.mapper.DepartMapper.getById"> </association>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, code, name, depart_id
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from tb_major
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="getAll" resultMap="BaseResultMap">
+  	SELECT * FROM tb_major
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from tb_major
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.honestpeak.model.Major" >
+    insert into tb_major (id, code, name, 
+      depart_id)
+    values (#{id,jdbcType=BIGINT}, #{code,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
+      #{departId,jdbcType=BIGINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.honestpeak.model.Major" >
+    insert into tb_major
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="code != null" >
+        code,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="departId != null" >
+        depart_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="code != null" >
+        #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="departId != null" >
+        #{departId,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.honestpeak.model.Major" >
+    update tb_major
+    <set >
+      <if test="code != null" >
+        code = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="departId != null" >
+        depart_id = #{departId,jdbcType=BIGINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.honestpeak.model.Major" >
+    update tb_major
+    set code = #{major.code,jdbcType=VARCHAR},
+      name = #{major.name,jdbcType=VARCHAR},
+      depart_id = #{major.department.id,jdbcType=BIGINT}
+    where id = #{major.id,jdbcType=BIGINT}
+  </update>
+  <select id="findMajorByDepartId" resultMap="BaseResultMap">
+  	 select 
+    <include refid="Base_Column_List" />
+    from tb_major
+    where depart_id = #{departId,jdbcType=BIGINT}
+  </select>
+   <select id="findMajorPage" resultMap="MajorVoMap">
+  	select m.* from tb_major m
+  	left join tb_depart d on d.id=m.depart_id
+  	<where>
+  		<if test="departmentName != null and departmentName != ''">
+  			and m.depart_id = (select id from tb_depart where name like CONCAT('%',#{departmentName},'%'))
+  		</if>
+  		<if test="major.code != null and major.code != ''">
+  			and m.code = #{major.code,jdbcType=VARCHAR}
+  		</if>
+  		<if test="major.name != null and major.name != ''">
+  			and m.name like CONCAT('%',#{major.name},'%')
+  		</if>
+  	</where>
+  	</select>
+  	<select id="getById" parameterType="java.lang.Long" resultMap="MajorVoMap">
+		SELECT m.* FROM tb_major m
+		left join tb_depart d on d.id = m.depart_id		
+		WHERE m.id = #{id}
+	</select>
+	<insert id="add"  parameterType="com.honestpeak.vo.MajorVo">
+	insert into tb_major (depart_id,name,code) values(#{major.department.id},#{major.name},#{major.code})
+	</insert>
+	<select id="getByName" parameterType="java.lang.String" resultType="com.honestpeak.vo.MajorVo">
+		select m.* from tb_major m
+		left join tb_depart d on d.id = m.depart_id
+		where m.name = #{majorName}
+	</select>
+	<select id="getByName1" parameterType="java.lang.String" resultType="com.honestpeak.model.Major">
+		select m.code as code,m.name as name,m.depart_id as departId from tb_major m
+		where m.name = #{majorName}
+	</select>
+</mapper>

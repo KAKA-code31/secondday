@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.honestpeak.mapper.PrivilegeMapper">
+	<resultMap id="BaseResultMap" type="com.honestpeak.model.Privilege">
+		<id column="id" jdbcType="BIGINT" property="id" />
+		<result column="name" jdbcType="VARCHAR" property="name" />
+		<result column="url" jdbcType="VARCHAR" property="url" />
+		<result column="icon" jdbcType="VARCHAR" property="icon" />
+		<result column="parentId" jdbcType="BIGINT" property="parentId" />
+		<result column="status" jdbcType="INTEGER" property="status" />
+		<result column="privilegeType" jdbcType="INTEGER" property="privilegeType" />
+		<result column="createTime" jdbcType="VARCHAR" property="createTime" />
+		<result column="description" jdbcType="VARCHAR" property="description" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, name, url, icon, parentId, status, privilegeType, createTime,
+		description
+	</sql>
+	<select id="selectByPrimaryKey" parameterType="java.lang.Long"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from tb_privilege
+		where id = #{id,jdbcType=BIGINT}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+		delete from tb_privilege
+		where id = #{id,jdbcType=BIGINT}
+	</delete>
+	<insert id="insert" parameterType="com.honestpeak.model.Privilege">
+		<selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		insert into tb_privilege (name, url, icon,
+		parentId, status, privilegeType,
+		createTime, description)
+		values (#{name,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR},
+		#{icon,jdbcType=VARCHAR},
+		#{parentId,jdbcType=BIGINT}, #{status,jdbcType=INTEGER}, #{privilegeType,jdbcType=INTEGER},
+		#{createTime,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR})
+	</insert>
+	<insert id="insertSelective" parameterType="com.honestpeak.model.Privilege">
+		<selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		insert into tb_privilege
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="name != null">
+				name,
+			</if>
+			<if test="url != null">
+				url,
+			</if>
+			<if test="icon != null">
+				icon,
+			</if>
+			<if test="parentId != null">
+				parentId,
+			</if>
+			<if test="status != null">
+				status,
+			</if>
+			<if test="privilegeType != null">
+				privilegeType,
+			</if>
+			<if test="createTime != null">
+				createTime,
+			</if>
+			<if test="description != null">
+				description,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="name != null">
+				#{name,jdbcType=VARCHAR},
+			</if>
+			<if test="url != null">
+				#{url,jdbcType=VARCHAR},
+			</if>
+			<if test="icon != null">
+				#{icon,jdbcType=VARCHAR},
+			</if>
+			<if test="parentId != null">
+				#{parentId,jdbcType=BIGINT},
+			</if>
+			<if test="status != null">
+				#{status,jdbcType=INTEGER},
+			</if>
+			<if test="privilegeType != null">
+				#{privilegeType,jdbcType=INTEGER},
+			</if>
+			<if test="createTime != null">
+				#{createTime,jdbcType=VARCHAR},
+			</if>
+			<if test="description != null">
+				#{description,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.honestpeak.model.Privilege">
+		update tb_privilege
+		<set>
+			<if test="name != null">
+				name = #{name,jdbcType=VARCHAR},
+			</if>
+			<if test="url != null">
+				url = #{url,jdbcType=VARCHAR},
+			</if>
+			<if test="icon != null">
+				icon = #{icon,jdbcType=VARCHAR},
+			</if>
+			<if test="parentId != null">
+				parentId = #{parentId,jdbcType=BIGINT},
+			</if>
+			<if test="status != null">
+				status = #{status,jdbcType=INTEGER},
+			</if>
+			<if test="privilegeType != null">
+				privilegeType = #{privilegeType,jdbcType=INTEGER},
+			</if>
+			<if test="createTime != null">
+				createTime = #{createTime,jdbcType=VARCHAR},
+			</if>
+			<if test="description != null">
+				description = #{description,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where id = #{id,jdbcType=BIGINT}
+	</update>
+	
+	<select id="findPrivilegePage" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		FROM
+			tb_privilege
+		<where>
+			<if test="1">
+				and status=1
+			</if>
+			<if test="privilege!=null">
+				<if test="privilege.name!=null and privilege.name!=''">
+					and name LIKE CONCAT('%',#{privilege.name},'%')
+				</if>
+				<if test="privilege.privilegeType!=null">
+					and privilegeType = #{privilege.privilegeType}
+				</if>
+			</if>
+		</where>
+	</select>
+	<!-- 批量删除 -->
+	<delete flushCache="false" id="deleteAll" parameterType="String">
+		delete from tb_privilege
+		where id in
+		<foreach close=")" collection="array" index="index" item="item"
+			open="(" separator=",">
+			#{item}
+		</foreach>
+	</delete>
+	<select id="findAllPrivilegeByType" parameterType="java.lang.Integer"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from tb_privilege where
+		privilegeType=#{privilegeType,jdbcType=INTEGER}
+	</select>
+	<select id="findAllPrivilege" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from tb_privilege
+		<where>
+			<if test="privilege.name != null">
+				and name = #{privilege.name,jdbcType=VARCHAR}
+			</if>
+			<if test="privilege.url != null">
+				and url = #{privilege.url,jdbcType=VARCHAR}
+			</if>
+			<if test="privilege.icon != null">
+				and icon = #{privilege.icon,jdbcType=VARCHAR}
+			</if>
+			<if test="privilege.parentId != null">
+				and parentId = #{privilege.parentId}
+			</if>
+			<if test="privilege.status != null">
+				and status = #{privilege.status,jdbcType=INTEGER}
+			</if>
+			<if test="privilege.privilegeType != null">
+				and privilegeType =
+				#{privilege.privilegeType,jdbcType=INTEGER}
+			</if>
+			<if test="privilege.createTime != null">
+				and createTime = #{privilege.createTime,jdbcType=VARCHAR}
+			</if>
+			<if test="privilege.description != null">
+				and description =
+				#{privilege.description,jdbcType=VARCHAR}
+			</if>
+		</where>
+	</select>
+	<select id="findParentPrivilege" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from tb_privilege where parentId IS NULL AND `status`=1
+	</select>
+	<select id="findAllPrivilegeByTypeAndPid" resultMap="BaseResultMap">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM
+		tb_privilege
+		where
+		privilegeType=#{priType,jdbcType=INTEGER}
+		AND
+		parentId=#{privilegeId,jdbcType=BIGINT}
+		AND `status` = 1
+	</select>
+</mapper>

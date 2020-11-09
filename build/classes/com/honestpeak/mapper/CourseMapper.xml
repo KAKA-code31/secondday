@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.honestpeak.mapper.CourseMapper" >
+  <resultMap id="BaseResultMap" type="com.honestpeak.model.Course" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="code" property="code" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="count" property="count" jdbcType="INTEGER" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, code, name, count, description
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from tb_course
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from tb_course
+    where id = #{id}
+  </delete>
+  <insert id="insert" parameterType="com.honestpeak.model.Course" >
+    insert into tb_course (id, code, name, 
+      count, description)
+    values (#{id,jdbcType=BIGINT}, #{code,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
+      #{count,jdbcType=INTEGER}, #{description,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.honestpeak.model.Course" >
+    insert into tb_course
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="code != null" >
+        code,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="count != null" >
+        count,
+      </if>
+      <if test="description != null" >
+        description,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="code != null" >
+        #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="count != null" >
+        #{count,jdbcType=INTEGER},
+      </if>
+      <if test="description != null" >
+        #{description,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.honestpeak.model.Course" >
+    update tb_course
+    <set >
+      <if test="code != null" >
+        code = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="count != null" >
+        count = #{count,jdbcType=INTEGER},
+      </if>
+      <if test="description != null" >
+        description = #{description,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.honestpeak.model.Course" >
+    update tb_course
+    set code = #{code,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR},
+      count = #{count,jdbcType=INTEGER},
+      description = #{description,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="selectAllCourse" resultMap="BaseResultMap">
+		SELECT * FROM tb_course  c
+		left join tb_experiment e on e.course_id = c.id
+		left join tb_experiment_teacher et on et.experiment_id = e.id
+		where et.teacher_id = #{userId} GROUP BY c.id
+	</select>
+	<select id="selectCourseByCourseCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+		select * from tb_course where code = #{bh}
+	</select>
+	<insert id="insertCourse" parameterType="com.honestpeak.model.Course" useGeneratedKeys="true" keyProperty = "id" keyColumn="id">
+		<selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+	    	SELECT LAST_INSERT_ID()
+	    </selectKey>
+		insert into tb_course(code,name,count,description)
+		values(#{code},#{name},#{count},#{description})
+	</insert>
+	
+	<select id="selectIdByCourseCode" parameterType="String" resultType="java.lang.Long">
+		select id from tb_course where code = #{courseCode}
+	</select>
+	
+	<select id="selectIdBySelectCourseId" parameterType="java.lang.Long" resultType="java.lang.Long">
+		SELECT  e.course_id from tb_selectcourse s
+		LEFT JOIN tb_experiment_teacher et on et.id = s.expriment_teacher_id
+		LEFT JOIN tb_experiment e on e.id = et.experiment_id
+		WHERE s.id = #{id}
+	</select>
+	<select id = "getCountById" parameterType="java.lang.Long" resultType="int">
+		select count from tb_course where id = #{id}		
+	</select>
+	<select id = "getNameByEid" parameterType="java.lang.Long" resultType="java.lang.String">
+		select name from tb_course where id = #{courseId}		
+	</select>
+</mapper>

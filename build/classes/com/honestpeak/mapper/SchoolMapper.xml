@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.honestpeak.mapper.SchoolMapper" >
+  <resultMap id="BaseResultMap" type="com.honestpeak.model.School" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="code" property="code" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="address" property="address" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, code, name, address
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select
+    <include refid="Base_Column_List" />
+    from tb_school
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="getById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+		SELECT * FROM tb_school WHERE id = #{id}
+  </select>
+  <select id="getAll" resultMap="BaseResultMap">
+  	SELECT * FROM tb_school
+  </select>
+  <select id="findSchoolPage" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from tb_school
+		
+		<where>
+			<if test="school!=null">
+				<if test="school.name!=null and school.name!=''">
+					and name LIKE CONCAT('%',#{school.name},'%')
+				</if>
+				<if test="school.code!=null and school.code!=''">
+					and code LIKE CONCAT('%',#{school.code},'%')
+				</if>
+				<if test="school.address!=null and school.address!=''">
+					and address LIKE CONCAT('%',#{school.address},'%')
+				</if>
+			</if>
+		</where>
+	</select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from tb_school
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+	<delete flushCache="false" id="deleteByIds" parameterType="String">
+		delete from tb_school
+		where id in
+		<foreach close=")" collection="array" index="index" item="item"
+			open="(" separator=",">
+			#{item}
+		</foreach>
+	</delete>
+  <insert id="insert" parameterType="com.honestpeak.model.School" >
+    insert into tb_school (id, code, name, 
+      address)
+    values (#{id,jdbcType=BIGINT}, #{code,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
+      #{address,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.honestpeak.model.School" >
+    insert into tb_school
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="code != null" >
+        code,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="address != null" >
+        address,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="code != null" >
+        #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        #{address,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.honestpeak.model.School" >
+    update tb_school
+    <set >
+      <if test="code != null" >
+        code = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.honestpeak.model.School" >
+    update tb_school
+    set code = #{code,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR},
+      address = #{address,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

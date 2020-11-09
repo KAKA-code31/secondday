@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.honestpeak.mapper.JudgeMapper" >
+  <resultMap id="BaseResultMap" type="com.honestpeak.model.Judge" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="parent_id" property="parentId" jdbcType="BIGINT" />
+    <result column="score" property="score" jdbcType="DOUBLE" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, name, parent_id,score
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from tb_judge
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from tb_judge
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.honestpeak.model.Judge">
+    insert into tb_judge (id, name, parent_id,score
+      )
+    values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{parentId,jdbcType=BIGINT},#{score,jdbcType=BIGINT}
+      )
+  </insert>
+  <insert id="insertof" parameterType="com.honestpeak.model.Judge" useGeneratedKeys="true" keyProperty = "id" keyColumn="id">
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+	    	SELECT LAST_INSERT_ID()
+	    </selectKey>
+    insert into tb_judge (name, parent_id,score
+      )
+    values (#{name,jdbcType=VARCHAR}, #{parentId,jdbcType=BIGINT},#{score,jdbcType=BIGINT}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.honestpeak.model.Judge" >
+    insert into tb_judge
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="parentId != null" >
+        parent_id,
+      </if>
+      <if test="score != null" >
+        score,
+      </if>
+     
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null" >
+        #{parentId,jdbcType=BIGINT},
+      </if>
+      <if test="score != null" >
+        #{score,jdbcType=DOUBLE},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.honestpeak.model.Judge" >
+    update tb_judge
+    <set >
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null" >
+        parent_id = #{parentId,jdbcType=BIGINT},
+      </if>
+      <if test="score != null" >
+        score = #{score,jdbcType=DOUBLE},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.honestpeak.model.Judge" >
+    update tb_judge
+    set name = #{name,jdbcType=VARCHAR},
+      parent_id = #{parentId,jdbcType=BIGINT}
+      score = #{score,jdbcType=DOUBLE}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateJudges"  >
+    update tb_judge
+    set course_id = #{courseId,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT} 
+  </update>
+  <select id="findParentJudge" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from tb_judge where parent_id IS NULL
+	</select>
+	<select id="findAllJudgeByTypeAndPid" resultMap="BaseResultMap">
+		select distinct j.* from tb_judge j 
+		LEFT JOIN tb_judge_selectcourse js on js.judge_id= j.id
+		LEFT JOIN tb_selectcourse s on s.id = js.selectcourse_id
+		LEFT JOIN tb_experiment_teacher et on et.id = s.expriment_teacher_id
+		LEFT JOIN tb_experiment e on e.id = et.experiment_id
+		where
+		j.parent_id=#{privilegeId,jdbcType=BIGINT} and j.course_id = #{courseId}
+		order by j.score desc,j.id
+	</select>
+	<select id= "findJudgeById" parameterType ="java.lang.Long" resultType= "java.lang.Integer" >  
+     select count(*) from tb_judge
+     where id = #{id,jdbcType=BIGINT}  
+  </select>  
+   <select id= "findAllJudge" resultMap ="BaseResultMap">  
+     select  
+     <include refid ="Base_Column_List"/>  
+     from tb_judge where parent_id is NULL
+     order by id  
+  </select> 
+  <select id="selectByPIdAndName" resultType="java.lang.Long">
+  	select * from tb_judge where parent_id = #{pId} and name = #{name}
+  </select>
+  <select id="selectMaxId" resultType="java.lang.Long">
+  select max(id) from tb_judge 
+  </select>
+  <select id="getCountByCourseId" parameterType="java.lang.Long" resultType="int">
+  	select count(*) from tb_judge where id in (SELECT id from tb_judge where parent_id = 1 and course_id = #{cid})
+  </select>
+  <select id="getByCourseId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+  	select * from tb_judge where id in (SELECT id from tb_judge where parent_id = 1 and course_id = #{cid})
+  </select>
+  <select id="getCountByParentId" parameterType="java.lang.Long" resultType="int">
+  	select count(*) from tb_judge where parent_id = #{id}
+  </select>
+  <select id="selectByPId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+  	select * from tb_judge where parent_id = #{id}
+  </select>
+  <select id="selectJudgeIdBySelId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+  	SELECT
+	j.*
+	FROM
+		tb_judge_selectcourse js
+	left join tb_judge j on j.id = js.judge_id
+	WHERE
+	 js.selectcourse_id =#{selId}
+  </select>
+  <select id="selectByPrimaryKey1" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from tb_judge
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByCourseId" parameterType="java.lang.Long">
+  	delete from tb_judge where course_id = #{id}
+  </delete>
+  <select id="getScoreById" parameterType="java.lang.Long" resultType="Double">
+  	select score from tb_judge where id = #{id}
+  </select>
+  <select id="getParentById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+     select 
+    <include refid="Base_Column_List" />
+    from tb_judge
+    where id=#{id}
+  </select>
+</mapper>

@@ -1,0 +1,27 @@
+*{font-size:14px;color:#333;border:0;margin:0;padding:0;font-family:"微软雅黑";}
+.Hui-iconfont{color: #fff;}
+body{ margin:0 auto;}
+ul{display:block;margin:0;padding:0;list-style:none;}
+li{display:block;margin:0;padding:0;list-style: none;}
+img{border:0;display:block;}
+dl,dt,dd{margin:0;padding:0;display:block;}
+a{text-decoration:none;}
+a:hover{color:#007ad0}
+table{border-collapse:collapse;border-spacing: 0;}
+cite{font-style:normal;}
+
+.clearfix{clear: both;}
+
+.page-container_tittle{background: #f5fafe;height: 40px;line-height: 40px;margin-bottom: 15px;position: relative;text-indent: 15px;color: #666;border: solid 1px #eee;}
+.firm_det_tit_line{width: 5px;
+    height: 18px;
+    display: block;
+    position: absolute;
+    left: 0px;
+    top: 10px;background:#3c80a7;}
+.page-container_content{margin-bottom: 15px;padding-left:40px;}    
+.page-container_content_img{width: 80px;height:80px;float: left;overflow: hidden;}
+.page-container_content_img>img{width: 80px;}
+.page-container_content_right{float: left;margin-left: 40px;}
+.page-container_content_span{font-size: 13px;margin-right: 20px;}
+

@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.honestpeak.mapper.UserRoleMapper" >
+  <resultMap id="BaseResultMap" type="com.honestpeak.model.UserRole" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="userId" property="userId" jdbcType="BIGINT" />
+    <result column="roleId" property="roleId" jdbcType="BIGINT" />
+  </resultMap>
+  <resultMap id="TeacherMap" type="com.honestpeak.model.Teacher">
+		<result column="id" property="id" jdbcType="BIGINT" />
+		<result column="userId" property="userId" jdbcType="VARCHAR" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="adminType" property="adminType" jdbcType="INTEGER" />
+	</resultMap>
+	<resultMap id="InsVoMap" type="com.honestpeak.vo.InsVo">
+		<id column="id" property="id" jdbcType="VARCHAR" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="status" property="status" jdbcType="VARCHAR" />
+	</resultMap>
+  <sql id="Base_Column_List" >
+    id, userId, roleId
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from tb_user_role
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from tb_user_role
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.honestpeak.model.UserRole" >
+    insert into tb_user_role (id, userId, roleId
+      )
+    values (#{id,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, #{roleId,jdbcType=BIGINT}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.honestpeak.model.UserRole" >
+    insert into tb_user_role
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="userId != null" >
+        userId,
+      </if>
+      <if test="roleId != null" >
+        roleId,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="roleId != null" >
+        #{roleId,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.honestpeak.model.UserRole" >
+    update tb_user_role
+    <set >
+      <if test="userId != null" >
+        userId = #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="roleId != null" >
+        roleId = #{roleId,jdbcType=BIGINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.honestpeak.model.UserRole" >
+    update tb_user_role
+    set userId = #{userId,jdbcType=BIGINT},
+      roleId = #{roleId,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="findStuRoleIdListByUserId" parameterType="java.lang.String" resultType="java.lang.Long">
+		select ur.roleId AS roleId from tb_user_role  ur
+		LEFT JOIN tb_role r ON ur.roleId = r.id
+		left join tb_student s on s.id = ur.userId
+		where r.`name` = '学生' and s.user_id = #{userId,jdbcType=BIGINT}
+	</select>
+	<select id="findTeacherRoleIdListByUserId" parameterType="java.lang.String" resultType="java.lang.Long">
+		select ur.roleId AS roleId from tb_user_role  ur
+		LEFT JOIN tb_role r ON ur.roleId = r.id
+		left join tb_teacher t on t.id = ur.userId
+		where r.`name` != '学生' and t.user_id = #{userId,jdbcType=BIGINT}
+	</select>
+	<insert id="save" parameterType="java.util.List"
+		useGeneratedKeys="true">
+		<selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		insert into tb_user_role (userId,roleId)
+		values
+		<foreach collection="list" index="index" item="item"
+			separator=",">
+			(#{item.userId},#{item.roleId})
+		</foreach>
+	</insert>
+	<delete id="deleteAllByUserId" parameterType="java.lang.Long">
+		delete from
+		tb_user_role
+		where userId = #{userId,jdbcType=BIGINT}
+	</delete>
+	<delete flushCache="false" id="deleteAll" parameterType="String">
+		delete from tb_user_role
+		where userId in
+		<foreach close=")" collection="array" index="index" item="item"
+			open="(" separator=",">
+			#{item}
+		</foreach>
+	</delete>
+	<select id="selectByUserId" parameterType="java.lang.Long"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from tb_user_role
+		where userId = #{id,jdbcType=BIGINT}
+	</select>
+	<select id="findUserRolePage" resultMap="TeacherMap">
+		SELECT
+			*
+		FROM
+			tb_teacher t
+		<where>
+			<if test="1">
+				t.id IN (SELECT DISTINCT(ur.userId) FROM tb_user_role ur)
+			</if>
+			<if test="user!=null">
+				<if test="user.name!=null and user.name!=''">
+					AND t.name LIKE CONCAT('%',#{user.teacher.name},'%')
+				</if>
+				<if test="user.userId!=null and user.userId!=''">
+					AND t.userId LIKE CONCAT('%',#{user.teacher.userId},'%')
+				</if>
+			</if>
+		</where>
+	</select>
+	<select id="findByUserId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+		SELECT
+			*
+		FROM
+			tb_user_role ur
+		WHERE
+			ur.userId = #{userId,jdbcType=BIGINT}
+	</select>
+	<select id="findUserRoleInsVos" parameterType="java.lang.Long" resultMap="InsVoMap">
+		SELECT
+			tb_role.id AS id,
+			tb_role.`name` AS `name`,
+			IF(tb_user_role.id IS NULL,0,1) as `status`
+		FROM
+			tb_role
+		LEFT JOIN tb_user_role ON tb_user_role.roleId = tb_role.id AND tb_user_role.userId = #{userId,jdbcType=BIGINT}
+		WHERE
+			tb_role.`status` = 1
+	</select>
+	<select id="checkUserRole" resultType="java.lang.Boolean">
+		select * from tb_user_role ur
+		LEFT JOIN tb_role r ON ur.roleId = r.id
+		where r.`name` = #{name} and ur.userId = #{studentId,jdbcType=BIGINT}
+	</select>	
+	<select id="countByTeacherId" parameterType="java.lang.Long" resultType="int">
+		select count(*) from tb_user_role where userId = #{userId} and roleId =7
+	</select>
+</mapper>
